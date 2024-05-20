@@ -14032,7 +14032,7 @@ namespace h3
 		~H3CmpStartBoni() {}
 	};
 #else
-	typedef VOID* H3CmpStartBoni;
+	//typedef VOID* H3CmpStartBoni;
 #endif
 
 #pragma pack(pop) /* align-4 */
@@ -14280,7 +14280,7 @@ namespace h3
 		INT32 previousNumber;
 		/** @brief [54] number of creatures that can never be recovered (e.g. basic Resurrection) */
 		INT32 numberForeverDead;
-		/** @brief [50] number of lost hit points of top creature in stack*/
+		/** @brief [58] number of lost hit points of top creature in stack*/
 		INT32 healthLost;
 		/** @brief [5C] 0..6, -1 is removed after battle */
 		INT32 slotIndex;
@@ -15430,7 +15430,7 @@ namespace h3
 		UINT8	blockedArtifacts[14];
 		/** @brief [1D4] 64 artifacts in the backpack*/
 		H3Artifact backpackArtifacts[64];
-		/** @brief [3D1] number of artifacts in the backpack*/
+		/** @brief [3D4] number of artifacts in the backpack*/
 		INT8	backpackCount;
 		/** @brief [3D5] male or female*/
 		BOOL    isFemale;
@@ -16354,7 +16354,7 @@ namespace h3
 		/** @brief [30] 48x36 small portrait name*/
 		LPCSTR           smallPortrait;
 		/** @brief [34] 58x64 large portrait name*/
-		LPCSTR           largePortrait;
+		LPCSTR			 largePortrait;
 		/** @brief [38] hero is available in RoE*/
 		BOOL8            roeHero;
 		/** @brief [39] hero is available in AB and SoD*/
@@ -16917,6 +16917,7 @@ namespace h3
 		/** @ brief [14]*/
 		INT32                state;
 		/** @ brief [18]*/
+	protected:
 		INT32                xDlg;
 		/** @ brief [1C]*/
 		INT32                yDlg;
@@ -18514,8 +18515,20 @@ namespace h3
 		H3Position mousePosition;
 		/** @brief [EC] the previous map adventure coordinates of the mouse*/
 		POINT previousMousePosition;
+		/** @brief [F4] draw offset in pixels*/
+		POINT screenDrawOffset;
+
+		h3unk8 _f_0FC[4];
+		/** @brief [100] refreshCounter, used for smooth */
+
+		INT32 refreshCounter;
+	//protected:
+
+		h3unk8 _f_104;
+
 	protected:
-		h3unk8 _f_0F4[24];
+		h3unk8 _f_105[7];
+
 	public:
 		/** @brief [10C] */
 		H3LoadedDef* heroDef[18];
@@ -18800,9 +18813,9 @@ namespace h3
 		INT32 necromancyRaisedAmount;
 		/** @brief [13D50] eCreatures */
 		eCreature necromancyRaisedMonsters;
-	protected:
+	//protected:
 		/** @brief [13D54] */
-		INT cmNumWinPcxLoaded;
+		H3LoadedPcx* cmNumWinPcxLoaded;
 	public:
 		/** @brief [13D58] information about obstacles on battlefield*/
 		H3Vector<H3Obstacle> obstacleInfo;
@@ -20565,6 +20578,7 @@ namespace h3
 		h3unk          _f_6C;
 		/** @brief [6D]*/
 		BOOL8          focused;
+	public:
 		/** @brief [6E]*/
 		BOOL8          autoRedraw;
 	public:
@@ -20883,6 +20897,7 @@ namespace h3
 		_H3API_ static H3DlgScrollbar* Create(INT32 x, INT32 y, INT32 width, INT32 height, INT32 id, INT32 ticksCount, H3DlgScrollbar_proc scrollbarProc, BOOL isBlue, INT32 stepSize, BOOL arrowsEnabled);
 		_H3API_ INT32 GetTick() const;
 		_H3API_ VOID  SetTick(INT32 index);
+		_H3API_ INT32 GetTicksCount() const;
 		_H3API_ VOID  SetBigStep(INT32 step);
 		_H3API_ VOID  SetButtonPosition();
 		_H3API_ BOOL  IsHorizontal() const;
@@ -33114,6 +33129,7 @@ namespace h3
 	_H3API_ H3DlgItem* H3BaseDlg::AddItem(H3DlgItem* item, BOOL initiate /*= TRUE*/)
 	{
 		dlgItems += item;
+
 		if (initiate)
 			return THISCALL_3(H3DlgItem*, 0x5FF270, this, item, -1); // LoadItem
 		else
@@ -35836,6 +35852,10 @@ namespace h3
     {
         tick = index;
     }
+	_H3API_ INT32 H3DlgScrollbar::GetTicksCount() const
+	{
+		return ticksCount;
+	}
     _H3API_ VOID H3DlgScrollbar::SetBigStep(INT32 step)
     {
         bigStepSize = step;
